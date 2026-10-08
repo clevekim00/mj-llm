@@ -1,0 +1,132 @@
+{
+  "recorded_at": "2026-10-08",
+  "scope": "N0 macOS CPU smoke only; product and all-platform gates remain incomplete",
+  "environment": {
+    "hardware": "MacBookPro17,1",
+    "ram_bytes": 17179869184,
+    "os": "macOS 27.0 (26A428)",
+    "rustc": "1.95.0 (59807616e 2026-04-14)",
+    "clang": "Apple clang 21.0.0 (clang-2100.1.1.101)",
+    "profile": "release",
+    "measurement": "Sequential probe processes, existing model cache, single development-machine observation; not p95 or minimum RAM"
+  },
+  "source_base_commit": "b764eeb066c0db8ca1b326cab10af3572df100cc",
+  "source_has_uncommitted_changes": true,
+  "source_sha256": {
+    "Cargo.lock": "fcad693f1bd428e534912b2b71c4eade94f7a4fbdf8659a8cb87619656e2fdb2",
+    "Cargo.toml": "d041d5a652c7a4eb8538fcd939bcae5c186edfd0b40e82990a0d18266c8060d8",
+    "catalog/n0.lock.json": "c9b0c74e1714af30d2ed627269de5ae6eac1d6984db1a73da5c5fe3222c1892f",
+    "crates/app-core/Cargo.toml": "4044f48d60154014a6bd53e250e4df47af6b0e2cd8ee9fc62551fdd10cc446b7",
+    "crates/app-core/src/embedding.rs": "836f6824a04ef68ce62dfbcef84e5cf6fcbf98450fac08cd1c1801aca62c476e",
+    "crates/app-core/src/integrity.rs": "795f64acdc1e3d20f10c1f4d96e3bed636fb449f37c43a2bc8d5b00ef4f70724",
+    "crates/app-core/src/lib.rs": "47d249d7e1d142bdb26633dfc0d7a816486d2524f85897c5dcd37f352a60c147",
+    "crates/app-core/src/pin.rs": "10d4f7209b48d54d18785c53df8ac61b3093681f8a83e42cdd1019f24862b8c5",
+    "crates/app-core/tests/integrity.rs": "5fdf538da3a7f4573ad574bda3511554c7b0ef9c82cb9281faf4793d3c653e70",
+    "crates/n0-probe/Cargo.toml": "8380a4f9631dd8d92fbc2a7355359ffc3cf8b4d6709218472cbf6c939984a156",
+    "crates/n0-probe/src/lib.rs": "9e6e2980227de4ed979554fbf73f8a503d903358d0aca6bef844b905e03d0f10",
+    "crates/n0-probe/src/main.rs": "3febee3d4b205c522caac3bd67ecbb0c73f1978474274be5cbc81d2a9f8e1239",
+    "crates/n0-probe/tests/cli.rs": "20ccbb41410d30742d9697c7d8a971e483dcf74c699607bb56b6fb7b43fc102f",
+    "crates/n0-probe/tests/native.rs": "298610045e00737aa64c7279c77acb625c84f5089f8b4af9803b767aa3c6d752",
+    "crates/runtime-litert/Cargo.toml": "2047b64757b15527ea9e31c71f488cb1022d43996261b100d343c5909c570a1b",
+    "crates/runtime-litert/build.rs": "af3205df72b22113ed39ab0250c87827f75fb79970ef0e90a12e1af40d5c52a0",
+    "crates/runtime-litert/native/bridge.cc": "05686b1aa1b2161c05a13b5b27901df61d29a5287e98bf2326f3be85d8f695dd",
+    "crates/runtime-litert/src/generation.rs": "0c662eebcdc56919b3d8d4bab680b95fc4030545421379b64d6466df9db0d5ea",
+    "crates/runtime-litert/src/lib.rs": "3fbba87d8841d4f5125497a6844e50d881391889626e30c0660b083db2d433dc",
+    "crates/runtime-litert/src/native.rs": "ee0aaf128a24566bb28ab7182d7c6d2bd60575144b93dec2e086557cda3b5076",
+    "fixtures/n0/red.png": "ca96adb50da6a5f6cbfe03c9c5eb8ad8f1a6c88f526b8a4b9d9d7d3b9ef90157",
+    "scripts/test-n0-macos.sh": "7e9706734b7f2b8c0c4a9e02cd462e25d6be80eb602289555d59069828028c69"
+  },
+  "tests": {
+    "portable_passed": 12,
+    "native_passed": 3,
+    "fmt": "passed",
+    "clippy_default": "passed",
+    "clippy_native": "passed",
+    "remote_ci": "not_run"
+  },
+  "embedding": {
+    "architecture": "aarch64",
+    "artifact_revision": "e301f74d5551b0c2641bd5cb4652a76239d5c5f8",
+    "artifact_sha256": "92dcbea108899e5d6e30d919b0744f90d9967e80c67a4ab5503ac16d54f62eb0",
+    "backend": "cpu",
+    "dimension": 768,
+    "embedding_space_id": "sha256:c979fed68455a9280a84f0eaa9d1727ff837aa273655f45654abb9262a54f0bc",
+    "fixture": "n0-synthetic-v1",
+    "os": "macos",
+    "product_verified": false,
+    "profile": "n0-litert018-textvision-cpu-f32-768-v1",
+    "profile_quality_status": "experimental-prefix-not-production-validated",
+    "remaining": [
+      "cancellation",
+      "retrieval quality corpus",
+      "resource pressure",
+      "other platform devices"
+    ],
+    "runs": [
+      {
+        "image_norm": 0.9999998536515331,
+        "inference_ms": 1325,
+        "load_and_reverify_ms": 1345,
+        "negative_cosine": 0.6651899161838934,
+        "positive_cosine": 0.8929744743500209,
+        "repeat_cosine": 0.9999999999999999,
+        "unload_ms": 28
+      },
+      {
+        "image_norm": 0.9999998536515331,
+        "inference_ms": 901,
+        "load_and_reverify_ms": 1304,
+        "negative_cosine": 0.6651899161838934,
+        "positive_cosine": 0.8929744743500209,
+        "repeat_cosine": 0.9999999999999999,
+        "unload_ms": 23
+      }
+    ],
+    "schema_version": 1,
+    "sdk_revision": "b2f686e2ed4718fb84ec398a61dd59ca0f0aff27",
+    "sdk_version": "0.18.0",
+    "status": "embedding_smoke_passed",
+    "verification_ms": 1256,
+    "resource_observation": {
+      "max_rss_bytes": 654360576,
+      "peak_footprint_bytes": 311657576
+    }
+  },
+  "generation": {
+    "architecture": "aarch64",
+    "artifact_revision": "a3c5d805ae362dff7f580bc25f2dfb9a5a7eaa76",
+    "artifact_sha256": "555579ff2f4fd13379abe69c1c3ab5200f7338bc92471557f1d6614a6e5ab0b4",
+    "backend": "cpu",
+    "context_tokens": 512,
+    "generation_ms": 3723,
+    "load_and_reverify_ms": 2164,
+    "max_output_tokens": 32,
+    "os": "macos",
+    "product_verified": false,
+    "remaining": [
+      "streaming first-token timing",
+      "cancellation",
+      "generation quality corpus",
+      "other platform devices"
+    ],
+    "response": {
+      "content": [
+        {
+          "text": "<think>\n\n</think>\n\n2 + 2 = 4",
+          "type": "text"
+        }
+      ],
+      "role": "assistant"
+    },
+    "sampler": "top_p_sampler,k=1,p=1,temperature=1,seed=0",
+    "schema_version": 1,
+    "sdk_revision": "b2f686e2ed4718fb84ec398a61dd59ca0f0aff27",
+    "status": "generation_smoke_passed",
+    "thinking": false,
+    "unload_ms": 32,
+    "resource_observation": {
+      "max_rss_bytes": 1700397056,
+      "peak_footprint_bytes": 1072269616
+    }
+  }
+}

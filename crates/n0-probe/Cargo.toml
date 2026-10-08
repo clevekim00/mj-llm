@@ -1,16 +1,18 @@
 [package]
-name = "mj-llm-core"
+name = "mj-llm-n0"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-repository.workspace = true
-description = "Platform-independent model integrity and embedding contracts"
 publish = false
 
+[features]
+default = []
+native-macos = ["mj-llm-runtime-litert/native-macos"]
+
 [dependencies]
-serde.workspace = true
+mj-llm-core = { path = "../app-core" }
+mj-llm-runtime-litert = { path = "../runtime-litert" }
 serde_json.workspace = true
-sha2.workspace = true
 
 [dev-dependencies]
 tempfile = "3.27.0"

@@ -1,0 +1,24 @@
+[package]
+name = "mj-llm-runtime-litert"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[features]
+default = []
+native-macos = []
+
+[dependencies]
+mj-llm-core = { path = "../app-core" }
+serde_json.workspace = true
+
+[build-dependencies]
+mj-llm-core = { path = "../app-core" }
+cc = "1.4.4"
+
+[lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
+
+[lints.clippy]
+undocumented_unsafe_blocks = "deny"

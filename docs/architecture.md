@@ -1,6 +1,6 @@
 # mj-llm 아키텍처 설계
 
-> 작성: 2026-10-08 · 상태: 설계, native 구현 전
+> 작성: 2026-10-08 · 상태: 제품 설계 + N0 macOS CPU adapter 구현·실제 smoke 검증. 전체 제품은 미구현.
 > 이 문서는 mj-llm의 설계 원본이다. 기존 프로젝트 경로가 등장하는 이전 작업 표는 [분리 경계](project-separation.md)를 참고한다.
 
 
@@ -8,7 +8,7 @@
 
 | 구분 | 내용 |
 |---|---|
-| 사용자 확정 요구 | Ollama 없이 PC와 모바일에서 직접 실행; 멀티모달 지원 |
+| 사용자 확정 요구 | 기존 진행 작업 계승; 모든 주요 플랫폼에서 독립 실행; Ollama 없는 멀티모달 제품 |
 | 설계 결정 | 공통 Rust application core, 내장 LiteRT-LM 우선, 플랫폼별 패키지, 검색 모델과 생성 모델 분리 |
 | 기본 가정 | 개인용·로컬 우선; 1차 출시 문서·사진 검색 + 근거 대화; 한국어 우선 품질 검증 |
 | 확장 범위 | 음성·영상 검색, 추가 모델, MCP, Trusted Node, 선택형 프로젝트 이동 |
@@ -17,6 +17,8 @@
 같은 제품은 같은 바이너리 또는 모든 기기의 동일 GPU 구현을 뜻하지 않는다. 도메인·저장 규칙·API 의미를 공유하고 OS별 앱과 가속 구현을 빌드한다. 최초 모델 다운로드 이후 핵심 기능은 인터넷 없이 동작한다. 네트워크가 차단된 초기 설치에서는 검증된 로컬 모델 파일 가져오기 또는 다운로드 필요 상태를 제공한다.
 
 첫 버전은 자동 기기 간 동기화·계정·클라우드를 요구하지 않는다. PC와 휴대폰에 독립 프로젝트를 만들 수 있다. 수동 프로젝트 내보내기/가져오기는 N4에서 제공하며, 기존 JSON 대화 이전은 N1의 필수 마이그레이션이다.
+
+필수 플랫폼은 Windows·macOS·Linux·Android·iOS/iPadOS다. 지원 아키텍처의 기준과 추가 후보는 [제품 기획서](product-plan.md)의 플랫폼 표를 따른다. 브라우저 단독 실행은 후속 후보라는 기본 가정이다. N1 PC 미리보기와 N2 전체 플랫폼 정식 출시를 구분한다.
 
 ## 2. 공식 지원 근거와 채택 조건
 
@@ -175,7 +177,7 @@ conversations/messages/citations, installed_artifacts
 
 ## 9. API와 모바일 lifecycle
 
-아래는 제안 계약이며 구현 전이다. 실제 현재 계약은 기존 `mj_llm_wapper/contracts/openapi.yaml`이다. `/v1/embeddings`의 기존 text input과 기본 768차원은 유지하고 프로젝트 내부 기본 인덱스는 품질 평가를 전제로 512차원을 사용한다. 임의 멀티모달 input을 OpenAI 호환이라고 표시하지 않는다.
+아래는 제안 계약이며 구현 전이다. 기존 `mj_llm_wapper/contracts/openapi.yaml`은 호환성 참고 원본이고 이 저장소의 현재 공개 API가 아니다. 선택형 HTTP facade는 N4에서 제공하며 N1/N2 UI는 AppService를 직접 호출한다. facade 제공 시 `/v1/embeddings`의 기존 text input과 기본 768차원은 호환 대상으로 검증하고 프로젝트 내부 기본 인덱스는 품질 평가를 전제로 512차원을 사용한다. 임의 멀티모달 input을 OpenAI 호환이라고 표시하지 않는다.
 
 | 인터페이스 | 동작 |
 |---|---|
@@ -188,7 +190,9 @@ conversations/messages/citations, installed_artifacts
 | `POST /api/v2/projects/{id}/answers` | 근거 검색 후 생성; token/citation/terminal event |
 | `POST /v1/chat/completions` | 기존 텍스트 subset 유지; 새 modality는 conformance 완료 후 공개 |
 
-모바일은 같은 명령을 native bridge로 호출하며 HTTP listener를 기본 포함하지 않는다. PC API도 명시적으로 활성화한 loopback 전용 인터페이스다. native UI는 payload 안의 project ID만 신뢰하지 않고 현재 열려 있는 workspace session에 맞춰 검증한다.
+모바일은 같은 명령을 native bridge로 호출하며 HTTP listener를 기본 포함하지 않는다. PC API도 명시적으로 활성화한 loopback 전용 인터페이스다. loopback이어도 인증을 생략하지 않고 Bearer token을 검증하며, CORS 기본 차단·요청 크기/동시성 제한을 둔다. native UI는 payload 안의 project ID만 신뢰하지 않고 현재 열려 있는 workspace session에 맞춰 검증한다.
+
+기존 Narmer 연동에서 요구한 stream/non-stream, 구조화 출력, 표준 오류와 실행 provenance는 N4 conformance 대상으로 보존한다. native schema 제약과 prompt 기반 JSON 생성을 구분하고 검증 실패는 성공으로 반환하지 않는다. 요청 모델·실행 artifact/hash·runtime·queue/inference latency를 반환하며 획득 불가능한 token 수는 추정치 또는 미제공으로 표시한다. 장소 추출·URL 수집 등 호출자 도메인 업무를 코어에 옮기지 않는다.
 
 새 오류는 `unsupported_modality`, `artifact_incompatible`, `insufficient_memory`, `permission_revoked`, `asset_unavailable`, `index_rebuild_required`, `thermal_paused` 등을 operation별로 정의한다. v1에서는 가능한 기존 stable code로 변환하고 v2에서는 상세 사유·retryable·복구 행동을 제공한다.
 
@@ -212,7 +216,7 @@ conversations/messages/citations, installed_artifacts
 
 ## 11. 검증 gate와 잠정 성능 예산
 
-아래 수치는 제품 목표이며 현재 달성한 성능 주장이 아니다. N0에서 기기 모델·OS·runtime·artifact hash를 고정하고 기준 기기별 예산을 확정한다. 모바일은 최소 Android 1대·iPhone 1대의 실기기 증거가 필요하다. PC는 macOS arm64, Windows x64, Linux x64를 독립 검증한다. 미검증 조합은 다운로드 가능하더라도 Verified로 표시하지 않는다.
+아래 수치는 제품 목표이며 현재 달성한 성능 주장이 아니다. N0에서 기기 모델·OS·runtime·artifact hash를 고정하고 기준 기기별 예산을 확정한다. N0 모바일 추론 feasibility에는 최소 Android 휴대폰 1대·iPhone 1대의 실기기 증거가 필요하고, N2 출시에는 Android 태블릿·iPad 각 1대의 E2E 증거를 추가한다. PC는 macOS arm64, Windows x64, Linux x64를 독립 검증한다. 미검증 조합은 다운로드 가능하더라도 Verified로 표시하지 않는다.
 
 | Gate | 합격 조건 |
 |---|---|
@@ -246,7 +250,9 @@ conversations/messages/citations, installed_artifacts
 
 T0의 모바일 feasibility는 T1~T7보다 먼저 실시해 PC 구현 후에 모바일 미지원 사실이 드러나는 위험을 줄인다. 다섯 플랫폼을 동시에 완료했다고 주장하지 않고 N1 PC 결과와 N2 모바일 결과를 각각 기록한다.
 
-`tools/reference/embedding_server.py`와 비교 도구는 native 수치·순위 검증용으로 유지한다. 기존 `OllamaRuntime`은 migration 회귀 fixture용 feature로 격리하고 새 앱의 기본 의존성에서는 제거한다. 기존 Ollama cache는 변환·삭제하지 않는다. native artifact가 필요하면 별도 다운로드한다. 기존 `runtime_model` alias로 저장된 대화는 원래 모델 이름을 보존하고 새 모델 연결을 명시적으로 선택한다.
+`tools/reference/embedding_server.py`와 비교 도구는 native 수치·순위 검증용으로 유지한다. 기존 `OllamaRuntime` 구현은 가져오지 않고 필요한 회귀 fixture만 비공개 데이터 없이 새로 작성한다. 기존 Ollama cache는 변환·삭제하지 않는다. native artifact가 필요하면 별도 다운로드한다. 기존 `runtime_model` alias로 저장된 대화는 원래 모델 이름을 보존하고 새 모델 연결을 명시적으로 선택한다.
+
+JSON 대화 import는 사용자가 선택한 입력을 검증한 뒤 별도 transaction에서 실행한다. 원본 파일을 변경하지 않고, source hash와 원본 conversation ID로 중복 import를 판정한다. role·문자열 content·크기·timestamp를 검증하고 미지원 record는 보고한다. 실패 시 이번 import만 rollback한다. 모델 alias는 설치 지시로 해석하지 않으며 API key·설정·모델 cache는 이전 대상이 아니다.
 
 추천 workspace 추가 단위는 `app-core`, `inference-core`, `runtime-litert`, `model-store`, `media-core`, `search-core`, `persistence`, `platform-bridge`다. 처음부터 미래 모든 adapter crate를 빈 구현으로 생성하지 않고 T0~T4에 필요한 경계부터 추출한다.
 
@@ -257,3 +263,31 @@ T0의 모바일 feasibility는 T1~T7보다 먼저 실시해 PC 구현 후에 모
 - **UI 프레임워크/bridge:** 기존 웹 재사용과 native mobile을 기본으로 검증한다. 다른 UI를 선택해도 domain·index·runtime 계약은 유지한다.
 - **native SDK와 embedding prefix:** 정확한 release/commit, 아티팩트와 전처리 정합성을 T0에서 확정한다. 현재 설계만으로 binary compatibility를 보장하지 않는다.
 - **배포·암호화·동기화:** 앱스토어/직접 배포, 별도 DB 암호화, 기기 간 동기화는 미확정이며 자동 네트워크 기능을 추가하지 않는다.
+
+## 14. 플랫폼 빌드·배포 설계
+
+다음은 구현할 패키징 경계다. 확정 SDK 버전과 최소 OS를 아직 선언하지 않는다.
+
+| 플랫폼 | 앱/bridge | 번들에 포함할 것 | 필수 플랫폼 시험 |
+|---|---|---|---|
+| Windows x64 | desktop shell → Rust → C bridge → LiteRT-LM C++ | 코어·native library·필수 런타임 의존성 | 깨끗한 설치, 비ASCII 경로, DLL 로딩, offline 검색/대화 |
+| macOS arm64 | desktop shell → Rust → C bridge → LiteRT-LM C++ | 코어·native library, 서명 대상 전체 | 서명·권한·모델 경로·CPU 실행, 검증 GPU 선택 |
+| Linux x64 | desktop shell → Rust → C bridge → LiteRT-LM C++ | 기준 배포판 ABI에 맞는 라이브러리 | glibc/그래픽·WebView 의존성, X11/Wayland 대상 명시, offline 실행 |
+| Android arm64 | Compose → Rust AppService ↔ Kotlin host adapter | Rust native library·내장 SDK | 문서/사진 권한, 저메모리·발열·background, 휴대폰/태블릿 |
+| iOS/iPadOS arm64 | SwiftUI → Rust AppService ↔ Swift host adapter | Rust library·내장 SDK | 파일 권한, background/kill, iPhone/iPad, 배포 빌드 |
+
+SDK/bridge는 N0에서 고정한다. OS별 파일 경로·권한 토큰·secure store handle은 PlatformHost가 소유하고 공통 도메인에 플랫폼 타입을 노출하지 않는다. 코어가 시스템 셸로 추론 엔진을 찾거나 설치하지 않는다. 모델 가중치는 앱 코드와 별도 데이터이며 native library는 앱 패키지로 배포한다.
+
+N0의 첫 구현은 공식 v0.18.0 macOS C API 배포물을 사용한다. C++ SDK를 직접 바인딩하지 않고 프로젝트의 예외 차단 C bridge와 safe Rust wrapper를 연결한다. `catalog/n0.lock.json`에 SDK commit·라이브러리/헤더 hash·모델 revision/hash를 고정했다. CPU 동기 호출만 있으며 제품 worker·취소·streaming은 아직 없다. 자세한 구현 범위와 재현 명령은 [N0 기록](n0-feasibility.md)을 따른다.
+
+CI는 공통 Rust 검사 → 대상별 cross-build/link → native adapter 계약 시험 → 패키지 설치 시험으로 나눈다. cross-build와 simulator 통과는 실기기 추론 증거를 대체하지 않는다. release 후보마다 app commit, compiler/SDK/bridge lock, artifact hash, OS·CPU·기기, backend, fixture revision, 품질/지연/peak memory, 패키지 hash, 실패 로그 위치를 하나의 검증 기록에 연결한다. 기록에 원본 사용자 자료나 비밀값을 넣지 않는다.
+
+설치 패키지는 대상별 서명·무결성과 이전 버전 업데이트를 검증한다. DB migration 전 백업을 만들고 schema가 새 버전으로 전환된 경우 구버전 앱이 그대로 열지 못하게 한다. 앱 rollback과 데이터 rollback을 한 쌍으로 검증하며 모델 rollback은 기존 embedding-space와 연결한다. Linux 지원은 시험한 배포판·버전 범위로 명시한다.
+
+## 15. N0 판단과 플랫폼 차단 처리
+
+첫 검증은 고정 SDK/artifact로 load → text/image embed → 유한 벡터/차원 확인 → unload다. 동일 환경에서 소형 생성 모델의 첫 토큰·완료·취소도 시험해 검색만 되는 조합을 제품 가능으로 판정하지 않는다. 이후 두 모델 순차 교체, 메모리·권한·패키징과 golden retrieval을 확인한다.
+
+각 조합은 `unverified → building → device-tested → accepted` 또는 `blocked`로 기록한다. `accepted`는 N0 feasibility 통과이며 제품 `Verified`는 N1/N2의 G1~G10 증거가 있어야 한다. API 심볼 부재·SDK preview 결함·unsupported artifact·OOM은 사유와 재현 조건을 남긴다.
+
+필수 OS의 LiteRT-LM 경로가 막히면 해당 N0 gate를 열어 두고 다른 고정 SDK 또는 내장 adapter를 좁은 PoC로 평가한다. 대체 artifact는 새 embedding-space와 품질 평가를 요구한다. Python 서비스·Ollama·원격 PC로 우회한 결과를 독립 실행 성공으로 세지 않는다. 대체 경로도 실패하면 플랫폼 요구를 유지한 채 출시를 보류하고 문서에 차단 사실을 남긴다.

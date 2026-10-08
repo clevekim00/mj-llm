@@ -1,9 +1,9 @@
 # mj-llm
 
-PC·Android·iOS에서 직접 실행하는 로컬 멀티모달 AI 프로젝트입니다.
+Windows·macOS·Linux·Android·iOS/iPadOS에서 직접 실행하는 로컬 멀티모달 AI 프로젝트입니다.
 Ollama나 Python을 별도로 설치하지 않는 제품을 목표로 합니다.
 
-> 현재 상태: 설계 및 Rust 작업공간 초기화. 내장 추론 엔진·사용자 앱은 아직 구현되지 않았습니다.
+> 현재 상태: N0 macOS CPU 검증 도구 구현. 실제 텍스트·이미지 임베딩과 소형 모델 생성 테스트를 통과했습니다. 사용자 앱과 다른 플랫폼의 native adapter는 아직 구현되지 않았습니다.
 
 ## 제품 방향
 
@@ -16,18 +16,22 @@ Ollama나 Python을 별도로 설치하지 않는 제품을 목표로 합니다.
 ## 문서
 
 - [아키텍처 설계](docs/architecture.md)
-- [제품 범위](docs/product-plan.md)
+- [제품 기획서·플랫폼 범위](docs/product-plan.md)
 - [구현 로드맵](docs/roadmap.md)
-- [기존 프로젝트와의 분리 경계](docs/project-separation.md)
+- [기존 프로젝트 계승 기록·분리 경계](docs/project-separation.md)
 - [개발용 임베딩 비교 도구](tools/reference/README.md)
+- [N0 실행·테스트 방법과 검증 결과](docs/n0-feasibility.md)
 
 ## 저장소 구조
 
 ```text
 apps/                   플랫폼별 앱의 예정 위치와 책임
-crates/app-core/        최소 Rust 라이브러리 골격
+crates/app-core/        모델 무결성·전처리 profile·embedding-space 검증
+crates/runtime-litert/  좁은 C ABI + macOS CPU native adapter
+crates/n0-probe/        실제 load/embed/generate/unload 검증 CLI
 contracts/              API·데이터 계약의 예정 위치
 catalog/                검증된 모델 manifest의 예정 위치
+catalog/n0.lock.json     N0 SDK·artifact revision/hash (제품 카탈로그 아님)
 docs/                   설계·제품 범위·로드맵
 tools/reference/        Python 임베딩 비교 도구 (제품 의존성 아님)
 ```
@@ -43,7 +47,16 @@ cargo test --workspace --locked
 cargo clippy --workspace --all-targets --locked -- -D warnings
 ```
 
-첫 작업은 [N0 런타임 기술 검증](docs/roadmap.md)입니다. 골격의 빌드 성공은 실제 모델 실행이나 모바일 지원 완료를 의미하지 않습니다.
+현재 작업은 [N0 런타임 기술 검증](docs/roadmap.md)입니다. SDK 없이 실행하는 공통 테스트는 native 검증을 대신하지 않습니다. 실제 모델 테스트는 [N0 안내](docs/n0-feasibility.md)의 명시적 실행 명령으로 수행합니다.
+
+```bash
+cargo run -p mj-llm-n0 --locked -- pin
+cargo run -p mj-llm-n0 --release --locked -- verify /absolute/path/to/embeddinggemma-2-text-vision-440m.litertlm
+```
+
+CLI는 자동 다운로드·외부 추론을 하지 않습니다. 기본 빌드는 native 미활성 오류를 반환하며 가짜 벡터로 성공 처리하지 않습니다.
+
+N1은 PC 미리보기, N2는 모든 필수 플랫폼의 공통 정식 출시입니다. 휴대폰·태블릿을 포함한 실기기 검증을 요구하며, 최소 OS와 기기 사양은 N0 실측으로 확정합니다. 브라우저 단독 실행은 현재 후속 후보로 둡니다.
 
 ## 프로젝트 관계
 
