@@ -1,0 +1,8 @@
+# Model metadata requires sentence-transformers >=6.1.0.
+# Transformers must include the embedding_gemma2 architecture (5.18 generation).
+sentence-transformers[image]>=6.1.0,<7
+transformers>=5.18.0,<6
+torch>=2.6,<3
+# The shared processor imports image utilities even with its encoder disabled.
+pillow>=10,<13
+torchvision>=0.21,<1

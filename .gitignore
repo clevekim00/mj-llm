@@ -1,0 +1,14 @@
+/target/
+/.venv*/
+/.mj-llm/
+/models/
+/downloads/
+*.gguf
+*.safetensors
+*.litertlm
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.DS_Store

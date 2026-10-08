@@ -1,0 +1,11 @@
+[package]
+name = "mj-llm-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Shared application core for mj-llm (initial scaffold)"
+publish = false
+
+[lints]
+workspace = true
