@@ -1,5 +1,7 @@
 # N0 네이티브 검증 구현·실행 기록
 
+[한국어](n0-feasibility.md) | [English](n0-feasibility.en.md) | [日本語](n0-feasibility.ja.md)
+
 2026-10-08. 제품 전체가 아닌 첫 native feasibility 구현이다. Ollama/Python 프로세스 없이 Rust CLI → 자체 C bridge → 공식 LiteRT-LM C API를 호출한다. 자동 다운로드·사용자 자료 전송 코드는 없다.
 
 ## 구현 범위

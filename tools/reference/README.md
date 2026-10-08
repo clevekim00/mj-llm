@@ -1,5 +1,7 @@
 # 개발용 EmbeddingGemma 2 비교 도구
 
+[한국어](README.md) | [English](README.en.md) | [日本語](README.ja.md)
+
 기존 mj_llm_wapper에서 가져온 text-only Python reference이다.
 제품 런타임이 아니며 native/mobile 지원 완료를 의미하지 않는다.
 이 디렉터리의 선택 의존성은 Rust workspace에 포함되지 않는다.

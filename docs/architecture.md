@@ -1,5 +1,7 @@
 # mj-llm 아키텍처 설계
 
+[한국어](architecture.md) | [English](architecture.en.md) | [日本語](architecture.ja.md)
+
 > 작성: 2026-10-08 · 상태: 제품 설계 + N0 macOS CPU adapter 구현·실제 smoke 검증. 전체 제품은 미구현.
 > 이 문서는 mj-llm의 설계 원본이다. 기존 프로젝트 경로가 등장하는 이전 작업 표는 [분리 경계](project-separation.md)를 참고한다.
 

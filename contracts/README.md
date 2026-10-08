@@ -1,5 +1,7 @@
 # 계약
 
+[한국어](README.md) | [English](README.en.md) | [日本語](README.ja.md)
+
 현재 API 구현은 없습니다. architecture.md의 제안 계약을 N0 이후 schema로 고정합니다.
 
 - ContentPart, Asset, EmbeddingSpace, Job, generation event

@@ -2,6 +2,8 @@
 
 [한국어](README.ko.md) | [English](README.en.md) | [日本語](README.ja.md)
 
+> Documentation translation, synchronized with the source on 2026-10-08. Commands, pinned identifiers, and implementation/verification status are preserved.
+
 `red.png` is a project-created 64×64 RGB PNG with every pixel `(255, 0, 0)`.
 No user photo or third-party image is included. It tests image decoding and
 finite normalized embedding output, not semantic image-retrieval quality.

@@ -1,5 +1,7 @@
 # 기존 프로젝트와의 분리
 
+[한국어](project-separation.md) | [English](project-separation.en.md) | [日本語](project-separation.ja.md)
+
 2026-10-08, mj_llm_wapper 작업공간에서 작성한 native 멀티모달 설계를 mj-llm으로 분리했다.
 
 - 기존 프로젝트: https://github.com/clevekim00/mj_llm_wapper

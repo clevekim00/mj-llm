@@ -1,5 +1,7 @@
 # mj-llm
 
+[한국어](README.md) | [English](README.en.md) | [日本語](README.ja.md)
+
 Windows·macOS·Linux·Android·iOS/iPadOS에서 직접 실행하는 로컬 멀티모달 AI 프로젝트입니다.
 Ollama나 Python을 별도로 설치하지 않는 제품을 목표로 합니다.
 
@@ -15,6 +17,9 @@ Ollama나 Python을 별도로 설치하지 않는 제품을 목표로 합니다.
 
 ## 문서
 
+문서는 한국어·영어·일본어로 제공하며 각 문서 상단에서 전환할 수 있습니다. 문서 번역은 모델의 다국어 품질 검증을 뜻하지 않으며, N0의 고정 한국어 시험 입력은 그대로 유지합니다.
+
+- [그림으로 보는 쉬운 사용 가이드](docs/user-guide.html)
 - [아키텍처 설계](docs/architecture.md)
 - [제품 기획서·플랫폼 범위](docs/product-plan.md)
 - [구현 로드맵](docs/roadmap.md)

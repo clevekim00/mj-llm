@@ -1,5 +1,7 @@
 # mj-llm 제품 기획서
 
+[한국어](product-plan.md) | [English](product-plan.en.md) | [日本語](product-plan.ja.md)
+
 > 기준: 2026-10-08. 기존 `mj_llm_wapper`의 진행 중인 기획·설계를 계승한 독립 제품이다.
 > 현재 상태는 설계와 N0 macOS CPU 추론 probe 구현이며, 아래 요구사항은 제품 구현 완료 목록이 아니다. 실제 검증 범위는 [N0 기록](n0-feasibility.md)을 따른다.
 
